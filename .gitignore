@@ -1,0 +1,46 @@
+# OS / editor noise
+.DS_Store
+.obsidian/
+
+# Claude Code: per-user settings & session state
+.claude/settings.local.json
+.claude/settings.json
+.claude/projects/
+
+# Anthropic-distributed skills (don't republish — only commit ours via the symlink)
+.claude/skills/*
+!.claude/skills/triage
+
+# Future user-added agents — only commit the published one
+.claude/agents/*
+!.claude/agents/triage-classifier.md
+
+# Subdomain skills — only commit the published ones
+research/.claude/skills/*
+!research/.claude/skills/lint
+!research/.claude/skills/ingest
+
+# Inbox: keep dir as scaffolding, ignore contents
+Clippings/*
+!Clippings/.gitkeep
+
+# Life subdomain (no wiki) — keep dir as example, ignore content
+life/*
+!life/.gitkeep
+
+# Subdomain raw + wiki content (private notes — keep dir structure, ignore notes)
+research/raw/*/*
+!research/raw/*/.gitkeep
+research/wiki/*/*
+!research/wiki/*/.gitkeep
+
+interview-prep/raw/*/*
+!interview-prep/raw/*/.gitkeep
+interview-prep/wiki/*/*
+!interview-prep/wiki/*/.gitkeep
+
+# Bookkeeping files — private per fork (see schemas/bookkeeping.md to bootstrap)
+research/index.md
+research/log.md
+interview-prep/index.md
+interview-prep/log.md

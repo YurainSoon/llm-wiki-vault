@@ -1,0 +1,1 @@
+../schemas/interview-prep-wiki.md
