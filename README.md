@@ -11,7 +11,7 @@ A working layout + a small set of [Anthropic Skills](https://docs.claude.com/en/
 - **You** curate sources (web clippings, papers, talks) into `Clippings/` (an inbox) and ask questions.
 - **The LLM** reads sources, synthesizes them into dense interlinked entity pages under each subdomain's `wiki/`, and maintains bookkeeping (`index.md`, `log.md`).
 
-The skills here implement four operations: **triage** (route inbox items into subdomains), **ingest** (one source → many wiki page touches, planned and confirmed before write), **lint** (periodic wiki health check), and a **triage-classifier** subagent (parallel Haiku-driven classification).
+The skills here implement five operations: **triage** (route inbox items into subdomains), **ingest** (one source → many wiki page touches, planned and confirmed before write), **lint** (periodic wiki health check), **query** (read the wiki and answer a question with a cited prose synthesis), and a **triage-classifier** subagent (parallel Haiku-driven classification).
 
 The skills are written as `SKILL.md` files (Anthropic Skill format), but their content is **framework-agnostic**: any LLM agent that can dispatch subagents and edit files can adapt them. See [INTEGRATION.md](INTEGRATION.md).
 
@@ -25,14 +25,15 @@ llm-wiki-vault/
 ├── skills/                  # ← canonical home of all skills (framework-agnostic)
 │   ├── triage/SKILL.md
 │   ├── ingest/SKILL.md
-│   └── lint/SKILL.md
+│   ├── lint/SKILL.md
+│   └── query/SKILL.md
 │
 ├── agents/                  # ← canonical home of subagents
 │   └── triage-classifier.md
 │
 ├── schemas/                 # ← schema docs (mounted as CLAUDE.md via symlink)
 │   ├── vault-routing.md     # = root CLAUDE.md
-│   ├── research-wiki.md     # = research/CLAUDE.md
+│   ├── research-wiki.md     # = research/CLAUDE.md (once you scaffold it)
 │   ├── interview-prep-wiki.md
 │   └── bookkeeping.md       # spec for index.md and log.md
 │
@@ -42,22 +43,25 @@ llm-wiki-vault/
 │   ├── skills/triage → ../../skills/triage
 │   └── agents/triage-classifier.md → ../../agents/triage-classifier.md
 │
-├── research/                # an example subdomain
-│   ├── CLAUDE.md → ../schemas/research-wiki.md
-│   ├── .claude/skills/lint → ../../../skills/lint
-│   ├── .claude/skills/ingest → ../../../skills/ingest
-│   ├── raw/                 # immutable sources (gitignored — your private notes)
-│   ├── wiki/                # synthesized pages (gitignored)
-│   ├── index.md             # bootstrapped after fork — see schemas/bookkeeping.md
-│   └── log.md
-│
-├── interview-prep/          # another example subdomain
-│   └── (same pattern)
-│
-└── life/                    # subdomain without a wiki (gitignored)
+└── Clippings/               # inbox (dir kept as scaffolding; contents gitignored)
+
+# Created locally on your fork — NOT in the repo. The subdomain folders
+# themselves are gitignored (not just their contents), so they never appear
+# in git. You scaffold them once after cloning (see Quick start):
+#
+#   research/         an example subdomain
+#     ├── CLAUDE.md → ../schemas/research-wiki.md
+#     ├── .claude/skills/{ingest,lint,query} → ../../../skills/...
+#     ├── raw/        immutable sources (your private notes)
+#     ├── wiki/       synthesized pages
+#     └── index.md, log.md   # bootstrapped per schemas/bookkeeping.md
+#   interview-prep/   another subdomain (same pattern)
+#   life/             subdomain without a wiki
 ```
 
-**Why symlinks?** Single source of truth in `skills/` / `agents/` / `schemas/`, while `.claude/` and per-subdomain `CLAUDE.md` remain in the locations Claude Code (and tools that auto-load `CLAUDE.md`) expect. Edit once, both surfaces update.
+**Why subdomains aren't in the repo.** This repo ships only the reusable framework — skills, subagents, schemas, and the root Claude Code wiring. The actual knowledge lives in the subdomain folders (`research/`, `interview-prep/`, `life/`), which are private and gitignored *as folders*: the directories themselves never show up in git, not just their contents. You create them on your fork.
+
+**Why symlinks?** Single source of truth in `skills/` / `agents/` / `schemas/`, while `.claude/` and per-subdomain `CLAUDE.md` sit where Claude Code (and tools that auto-load `CLAUDE.md`) expect. The root-level symlinks (`.claude/skills/triage`, `.claude/agents/…`) ship with the repo; the per-subdomain symlinks live inside the gitignored subdomain folders, so you recreate them when you scaffold a subdomain. Edit once, every surface updates.
 
 ## Hierarchical skill placement
 
@@ -65,12 +69,14 @@ Skills live at one of two levels:
 
 | Skill | Lives at | Why |
 |---|---|---|
-| `triage` | vault root (`skills/triage/`) | cross-domain — routes Clippings into the right subdomain |
-| `ingest`, `lint` | per-subdomain (`research/.claude/skills/`) | domain-specific — operates on one wiki at a time, needs that wiki's schema |
+| `triage` | vault root (`skills/triage/`, wired via `.claude/skills/triage` — ships in repo) | cross-domain — routes Clippings into the right subdomain |
+| `ingest`, `lint`, `query` | per-subdomain (`research/.claude/skills/`, symlinked on your fork) | domain-specific — operates on one wiki at a time, needs that wiki's schema |
 
-This mirrors how you actually use them: launch your LLM agent at the vault root for triage, then `cd research/` and start a fresh session for ingest/lint. Each session sees exactly the skills relevant to its scope.
+The canonical skill content always lives in the root `skills/` folder (which *does* ship in the repo). "Per-subdomain" only means *where the symlink that mounts it lives* — and since the subdomain folders are gitignored, you create those symlinks yourself when scaffolding a subdomain.
 
-**If you only manage one wiki** (e.g., just a research vault, no separate interview-prep), put everything at the root: move `ingest` and `lint` into the root-level `skills/` and skip the subdomain structure. Tell your LLM to do this.
+This mirrors how you actually use them: launch your LLM agent at the vault root for triage, then `cd research/` and start a fresh session for ingest/lint/query. Each session sees exactly the skills relevant to its scope.
+
+**If you only manage one wiki** (e.g., just a research vault, no separate interview-prep), put everything at the root: keep `ingest`, `lint`, and `query` in the root-level `skills/`, symlink them under the root `.claude/skills/`, and skip the subdomain structure. Tell your LLM to do this.
 
 ## Quick start
 
@@ -80,14 +86,17 @@ This mirrors how you actually use them: launch your LLM agent at the vault root 
 git clone <this-repo> llm-wiki-vault
 cd llm-wiki-vault
 
-# Bootstrap the bookkeeping files (gitignored, so you create them yourself).
-# Tell Claude:
+# The subdomain folders don't ship in the repo — scaffold one. Tell Claude:
 claude
-> Bootstrap research/index.md and research/log.md per schemas/bookkeeping.md.
-> Same for interview-prep/.
+> Scaffold the research/ subdomain per schemas/research-wiki.md and
+> schemas/bookkeeping.md: create research/CLAUDE.md → ../schemas/research-wiki.md,
+> the raw/ + wiki/ subdirectory structure, the
+> research/.claude/skills/{ingest,lint,query} symlinks back to ../../../skills/,
+> and bootstrap research/index.md + research/log.md.
+> Repeat for interview-prep/ if you want a second subdomain.
 ```
 
-That's it — `.claude/` symlinks are already wired, so the next time you say "triage" Claude finds the skill.
+The root `.claude/` symlinks ship with the repo, so **triage works immediately** at the vault root. `ingest` / `lint` / `query` become available once you've scaffolded a subdomain and `cd` into it.
 
 To start using it: drop a file (a paper PDF, a saved web page) into `Clippings/`, then say "triage". When triage routes the file into `research/raw/<sub>/`, `cd research/` and say "ingest <filename>" to fold it into the wiki.
 
