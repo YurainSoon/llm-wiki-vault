@@ -24,7 +24,8 @@ research/
 │   ├── books/         # multi-chapter books / tutorials. Prefer MD source (single file or one file per chapter); fall back to PDF.
 │   ├── threads/       # long Twitter threads
 │   ├── talks/         # conference talks / YouTube transcripts
-│   ├── code-notes/    # your analysis of a specific repo (not the repo itself)
+│   ├── code-notes/    # your analysis of a specific repo (the notes, not the repo itself)
+│   ├── repos/         # cloned source repos kept verbatim (the repo itself; notes about it go in code-notes/)
 │   └── personal/      # meeting notes, conversations with collaborators, your own thoughts
 └── wiki/              # LLM-maintained synthesis layer
     ├── methods/        # algorithms / techniques (flash-attention, MoE, RLHF, ...)

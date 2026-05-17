@@ -15,32 +15,13 @@
 .claude/agents/*
 !.claude/agents/triage-classifier.md
 
-# Subdomain skills — only commit the published ones
-research/.claude/skills/*
-!research/.claude/skills/lint
-!research/.claude/skills/ingest
-
 # Inbox: keep dir as scaffolding, ignore contents
 Clippings/*
 !Clippings/.gitkeep
 
-# Life subdomain (no wiki) — keep dir as example, ignore content
-life/*
-!life/.gitkeep
-
-# Subdomain raw + wiki content (private notes — keep dir structure, ignore notes)
-research/raw/*/*
-!research/raw/*/.gitkeep
-research/wiki/*/*
-!research/wiki/*/.gitkeep
-
-interview-prep/raw/*/*
-!interview-prep/raw/*/.gitkeep
-interview-prep/wiki/*/*
-!interview-prep/wiki/*/.gitkeep
-
-# Bookkeeping files — private per fork (see schemas/bookkeeping.md to bootstrap)
-research/index.md
-research/log.md
-interview-prep/index.md
-interview-prep/log.md
+# Subdomain folders are private — the folders themselves do not appear in the
+# repo at all (not just their contents). Published skills live under skills/ at
+# the root, so they are unaffected by this.
+/life/
+/research/
+/interview-prep/

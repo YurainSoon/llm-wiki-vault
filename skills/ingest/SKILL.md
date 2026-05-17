@@ -21,11 +21,19 @@ User-facing output (takeaway summary, plan table, report) is in **English** by d
 ### 1. Validate input
 
 - File must exist under `research/raw/`. Reject paths outside `raw/`.
-- Check `log.md` for prior ingest of this file:
+- Check `log.md` for prior ingest of this source. **Log titles ≠ filenames** — entries use the source's human-readable title (often with author/year, no `.md`), so a literal `basename` grep is brittle and will miss most re-ingests. Do BOTH:
+
   ```bash
-  grep -F "ingest | $(basename <file>)" log.md
+  # (a) List recent ingest lines and eyeball for a near-match:
+  grep -E '^## \[.*\] ingest \|' log.md | tail -30
+
+  # (b) Fuzzy match on 2–3 distinctive tokens from the filename
+  #     (drop stopwords: the/a/our/of/and/to/for/in/on). Also peek the
+  #     source's frontmatter `title:` if present and add tokens from it:
+  grep -iE 'ingest \|.*(<token1>|<token2>)' log.md
   ```
-  If already ingested → ask user: re-ingest (treat as update) or cancel?
+
+  If any candidate appears → STOP and ask user: re-ingest as update, audit existing pages, or cancel. Do not proceed silently — even if (b) is empty, trust (a) over the grep when a recent line looks like the same source.
 
 ### 2. Read the source
 

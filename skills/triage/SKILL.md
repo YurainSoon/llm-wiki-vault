@@ -19,7 +19,11 @@ User-facing output (table contents, summary report) is in **English** by default
 find Clippings -mindepth 1 -maxdepth 1 \( -type f -o -type d \)
 ```
 
-Items can be either single files (most common) OR directories (e.g., a multi-chapter book repo cloned in as one unit, like a honkit / mdbook source tree). Treat each top-level item — file or directory — as **one** classification unit. Do not descend into directories to dispatch per-file classifiers.
+Items can be either single files (most common) OR directories. Two common directory shapes:
+- a multi-chapter **book** repo (honkit / mdbook source tree) → routes to `research/raw/books/`
+- a cloned **source-code repo** kept verbatim (has `package.json` / `src/` / build config, not just prose `.md`) → routes to `research/raw/repos/` — distinct from `code-notes/`, which holds *notes about* a repo, not the repo itself
+
+Treat each top-level item — file or directory — as **one** classification unit. Do not descend into directories to dispatch per-file classifiers.
 
 If empty → report `Clippings/ is empty, nothing to triage` and stop.
 
@@ -126,6 +130,7 @@ Concise summary:
 
 ## Edge cases
 
+- **Cloned source-code repo**: route the whole directory to `research/raw/repos/` (verbatim code). Do not split it into per-file notes — that's the ingest skill's job, and the synthesized notes land in `research/raw/code-notes/` / the wiki, not here.
 - **Neither research nor interview-prep fits**: subagent returns low confidence. Surface in the ⚠ section. User decides (could go to a different subdomain like `life/`, stay in Clippings for later, or be deleted).
 - **Binary / unreadable files**: subagent returns `confidence: low` with `reason: "unreadable"`. Surface in ⚠ section.
 - **Filename mismatches content** (e.g., a PDF named `.md`): subagent flags in reason, sets confidence low.

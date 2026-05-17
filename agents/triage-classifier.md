@@ -19,7 +19,12 @@ An absolute path to a file **or directory** under `Clippings/`.
 
 **File input**: use the `Read` tool. If markdown, frontmatter (`title`, `source`, `author`) is a strong classification signal.
 
-**Directory input** (e.g., a cloned book repo with per-chapter files inside): `Read` won't accept a directory. Use `Bash ls <path>` to see the tree, then `Read` the most informative file in this priority:
+**Directory input**: `Read` won't accept a directory. Use `Bash ls <path>` to see the tree first, then decide which directory shape it is:
+
+- **Source-code repo** — has `package.json` / `Cargo.toml` / `go.mod` / `pyproject.toml` / a `src/` tree / build config (`tsconfig.json`, `vite.config.*`, etc.), not just prose `.md`. Read `README.md` to judge keep/delete and topical relevance, but the destination is `research/raw/repos/` (the code is kept verbatim; *notes about it* are a separate ingest-time artifact, not your call here). Usually `confidence: high` if README clearly signals the topic.
+- **Book / prose repo** — honkit / mdbook source, per-chapter `.md` files, no build system. Destination is `research/raw/books/`.
+
+To read the most informative file, use this priority:
 1. `README.md` — project / book overview
 2. `SUMMARY.md` — mdbook / honkit table of contents (good for inferring scope & structure)
 3. `index.md`
@@ -27,7 +32,7 @@ An absolute path to a file **or directory** under `Clippings/`.
 
 If none of the above exist, fall back to listing files and inferring from filenames; set `confidence: low`.
 
-**The `file` field in your JSON output must remain the original input path** (the directory itself, not the representative file you read). The triage skill `mv`s the whole directory — directories route to subdirectories that accept directory items (typically `research/raw/books/`).
+**The `file` field in your JSON output must remain the original input path** (the directory itself, not the representative file you read). The triage skill `mv`s the whole directory — directories route to subdirectories that accept directory items (`research/raw/repos/` for source-code repos, `research/raw/books/` for book/prose repos).
 
 ### 2. Judgment A — keep or delete
 
@@ -105,7 +110,8 @@ Edge cases (set `confidence: low` and explain in `reason`):
 - `books/` — multi-chapter books / tutorials / collected series. A Clippings item routed here may itself be a directory of per-chapter `.md` files (e.g., honkit/mdbook source).
 - `threads/` — Twitter / X threads
 - `talks/` — conference talks, YouTube transcripts, interviews
-- `code-notes/` — analysis of a specific codebase (not the code itself)
+- `code-notes/` — analysis of a specific codebase (the notes, not the code itself)
+- `repos/` — a cloned source-code repo kept verbatim (the directory item itself)
 - `personal/` — meeting notes, conversations, your own thoughts
 
 **`interview-prep/raw/`**:
