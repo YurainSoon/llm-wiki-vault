@@ -9,7 +9,7 @@ Single-source wiki integration. One ingest = one source file → multiple wiki p
 
 Pattern: **read source → calibrate takeaways with user → build full plan → user confirms → batch execute**.
 
-User-facing output (takeaway summary, plan table, report) is in **English** by default. To switch to another language, tell your LLM at the start of the session, or edit this file directly to change the language directive.
+User-facing output (takeaway summary, plan table, report) defaults to **the language the user writes in** — mirror the user's input language. To pin a fixed language instead, tell your LLM at the start of the session, or edit this line.
 
 ## Preconditions
 

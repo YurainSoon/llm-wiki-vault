@@ -106,7 +106,7 @@ The skill files are plain markdown — see [INTEGRATION.md](INTEGRATION.md) for 
 
 ## Languages
 
-All skill / agent / schema files default to English output (tables, summaries, JSON `reason` fields, etc.). To switch the output language to Chinese / Japanese / etc., **just tell your LLM at the start of a session, or edit the language directive at the top of the relevant `SKILL.md` file** — that's the standard "edit your own skill" loop these workflows are built around.
+All skills mirror **the language you write in** — ask in Chinese, get tables / summaries / `reason` fields back in Chinese; ask in English, get English. To pin a fixed output language regardless of input, **tell your LLM at the start of a session, or edit the language directive at the top of the relevant `SKILL.md` file** — that's the standard "edit your own skill" loop these workflows are built around.
 
 ## Inspiration
 

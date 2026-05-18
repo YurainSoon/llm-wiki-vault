@@ -9,7 +9,7 @@ Single-question wiki retrieval and synthesis. One query = read index + drill can
 
 Pattern: **index-first retrieval → adaptive drill-down → prose answer + bottom citations → fold-back at session boundary**.
 
-User-facing output is in **Chinese** by default (this vault's working language). To switch, tell the LLM at the start of the session, or edit this file.
+User-facing output defaults to **the language the user writes in** — mirror the user's input language. To pin a fixed language instead, tell the LLM at the start of the session, or edit this line.
 
 ## Preconditions
 

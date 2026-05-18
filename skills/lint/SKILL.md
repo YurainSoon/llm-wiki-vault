@@ -9,7 +9,7 @@ Wiki-wide health check. One pass produces one structured report grouped by check
 
 Pattern: **cheap scans → LLM analyses → one grouped report → user-directed fixes**.
 
-User-facing output (report contents, finding text) is in **English** by default. To switch to another language, tell your LLM at the start of the session, or edit this file directly to change the language directive.
+User-facing output (report contents, finding text) defaults to **the language the user writes in** — mirror the user's input language. To pin a fixed language instead, tell your LLM at the start of the session, or edit this line.
 
 ## Preconditions
 

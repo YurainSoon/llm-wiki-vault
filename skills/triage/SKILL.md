@@ -9,7 +9,7 @@ Parallel classification of files in `Clippings/`, routing each to `research/raw/
 
 Pattern: **dispatch subagents → propose batch → user confirms → main agent executes**.
 
-User-facing output (table contents, summary report) is in **English** by default. To switch to another language, tell your LLM at the start of the session, or edit this file directly to change the language directive.
+User-facing output (table contents, summary report) defaults to **the language the user writes in** — mirror the user's input language. To pin a fixed language instead, tell your LLM at the start of the session, or edit this line.
 
 ## Steps
 

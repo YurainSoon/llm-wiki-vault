@@ -141,7 +141,7 @@ Fields:
 - `file`: original absolute path (the input you received)
 - `action`: `"keep"` or `"delete"`
 - `destination`: absolute path to target subdirectory, with trailing `/`. `null` when `action` is `"delete"`.
-- `reason`: one English sentence (user reads this) explaining the classification
+- `reason`: one sentence (the user reads this) explaining the classification, written in the language the user writes in
 - `confidence`: `"high"` / `"medium"` / `"low"`
 
 ## Confidence calibration
